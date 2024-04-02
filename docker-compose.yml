@@ -1,0 +1,34 @@
+services:
+  csv-import:
+    build:
+      context: .
+    container_name: csv-import
+    image: csv-import
+    networks:
+      - app
+    volumes:
+      - app:/app/
+
+  httpd:
+    image: httpd:2.4
+    container_name: apache-csv-import
+    ports:
+      - 8080:80
+    volumes:
+      - app:/app
+      - ./httpd/my-httpd.conf:/usr/local/apache2/conf/httpd.conf
+    networks:
+      - app
+    depends_on:
+      - csv-import
+    tty: true
+
+volumes:
+  app:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./
+networks:
+  app:
