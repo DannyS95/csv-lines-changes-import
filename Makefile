@@ -20,7 +20,10 @@ composer-add:
 npm-i:
 	$(DOCKER_EXEC) $(CONTAINER_NAME) sh -c 'npm install $(command) --no-interaction'
 
-build:
+npm-add:
+	$(DOCKER_EXEC) $(CONTAINER_NAME) sh -c 'npm install $(package) --no-interaction'
+
+npm-build:
 	$(DOCKER_EXEC) $(CONTAINER_NAME) sh -c 'npm run build'
 
 install: composer-i npm-i build
