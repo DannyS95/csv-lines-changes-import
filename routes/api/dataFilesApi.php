@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DataFilesDifferenceController;
+
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes - Data Files
 |--------------------------------------------------------------------------
 |
 | Here is where you can register API routes for your application. These
@@ -14,6 +15,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dataFilesDifference', function (Request $request) {
-    return $request->user();
-});
+Route::post('/difference', DataFilesDifferenceController::class)->name('dataFiles.difference');
