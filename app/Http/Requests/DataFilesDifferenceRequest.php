@@ -25,8 +25,8 @@ class DataFilesDifferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recentData' => ['required', File::types(['csv',])->min('1kb'),],
-            'oldData' => ['required', File::types(['csv',])->min('1kb'),],
+            'recentData' => ['required', 'mimes:csv,txt'],
+            'oldData' => ['required', 'mimes:csv,txt'],
         ];
     }
 

@@ -10,5 +10,6 @@ class DataFilesDifferenceController extends Controller
 {
     public function __invoke(DataFilesDifferenceRequest $request): RedirectResponse
     {
+        dd($request);
     }
 }
