@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DataFilesDifferenceRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Processors\DataFileProcessor;
+use App\Http\Requests\DataFilesDifferenceRequest;
 
-class DataFilesDifferenceController extends Controller
+final class DataFilesDifferenceController extends Controller
 {
-    public function __invoke(DataFilesDifferenceRequest $request): RedirectResponse
+    public function __invoke(DataFilesDifferenceRequest $request)
     {
-        dd($request);
+        $recentFile = $request->file('recentData');
+        $oldFile = $request->file('oldData');
+
+        # start processing the files, so we can compare each line by column
+        $recentDataProcessor = new DataFileProcessor($recentFile);
+        $oldDataProcessor = new DataFileProcessor($oldFile);
+
+        foreach ($oldDataProcessor as $data) {
+            dd($data);
+        }
+        die();
+
     }
 }

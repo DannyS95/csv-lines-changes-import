@@ -25,8 +25,8 @@ class DataFilesDifferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recentData' => ['required', 'mimes:csv,txt'],
-            'oldData' => ['required', 'mimes:csv,txt'],
+            'recentData' => ['required', 'mimes:csv,txt', 'min:1',],
+            'oldData' => ['required', 'mimes:csv,txt', 'min:1',],
         ];
     }
 
