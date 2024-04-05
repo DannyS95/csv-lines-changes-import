@@ -2,17 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\CSV\Processors\CSVLinesProcessor;
-use App\Http\Requests\DataFilesDifferenceRequest;
-use App\CSV\Specification\CSVLineChangesSpecification;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Rules\File;
+use App\CSV\Processors\CSVLinesProcessor;
+use App\Http\Requests\CSVLinesChangesRequest;
+use App\CSV\Specification\CSVLineChangesSpecification;
 
 final class CSVLinesChangesController extends Controller
 {
-    public function __invoke(DataFilesDifferenceRequest $request, CSVLineChangesSpecification $csvLineDifferenceSpecification): JsonResponse
+    public function __invoke(CSVLinesChangesRequest $request, CSVLineChangesSpecification $csvLineDifferenceSpecification): JsonResponse
     {
-        $recentFile = $request->file('recentData');
-        $oldFile = $request->file('oldData');
+        $recentFile = $request->file('recentFile');
+        $oldFile = $request->file('oldFile');
+
+        $request->validate(
+            [
+                'recentFile' => [
+                    File::types(['csv', 'txt'])
+                    ->size(intval(bcadd(bcdiv($oldFile->getSize(), 1024), 1)))
+                    ->max(intval(bcmul(12, 1024))),
+                ],
+            ],
+            [
+                'recentFile.between' => 'The recent csv must contain more lines than the older CSV.'
+            ]
+        );
 
         # start processing the files
         $recentCsvProcessor = new CSVLinesProcessor($recentFile);
@@ -21,10 +35,6 @@ final class CSVLinesChangesController extends Controller
         # start reading line by line
         $linesCount = iterator_count($oldCsvProcessor);
         $linesCount--;
-
-        $request->validate([
-            'recentData' => ["gt:$linesCount"],
-        ], ['recentData.gt' => 'The recent csv must contain more data than the older CSV.']);
 
         $recentCsvProcessor->rewind();
         $linesChanges = [array_merge($recentCsvProcessor->getHeaders(), ['change'])];

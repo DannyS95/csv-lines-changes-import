@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DataFilesDifferenceRequest extends FormRequest
+class CSVLinesChangesRequest extends FormRequest
 {
 
 
@@ -25,8 +24,8 @@ class DataFilesDifferenceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recentData' => ['required', 'mimes:csv,txt', 'min:1',],
-            'oldData' => ['required', 'mimes:csv,txt', 'min:1',],
+            'recentFile' => ['required', 'mimes:csv,txt', 'min:1',],
+            'oldFile' => ['required', 'mimes:csv,txt', 'min:1',],
         ];
     }
 
@@ -38,8 +37,8 @@ class DataFilesDifferenceRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'recentData.required' => 'A csv with the old data is missing',
-            'oldData.required' => 'A csv with the new data is missing',
+            'recentFile.required' => 'A csv with the old data is missing',
+            'oldFile.required' => 'A csv with the new data is missing',
         ];
     }
 }
