@@ -7,7 +7,7 @@ const form = useForm({
 })
 
 const submit = () => {
-    axios.post(route('dataFiles.difference'), {
+    axios.post(route('csvLines.difference'), {
         oldData: form.oldData,
         recentData: form.recentData
     }, {

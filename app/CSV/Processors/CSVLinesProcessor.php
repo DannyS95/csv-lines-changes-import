@@ -1,14 +1,20 @@
 <?php
 
-namespace App\Processors;
+namespace App\CSV\Processors;
 
 use Illuminate\Http\UploadedFile;
 
-final class DataFileProcessor implements \Iterator
+final class CSVLinesProcessor implements \Iterator
 {
-    private array $data;
+    /**
+     * @var array<string>|false
+     */
+    private mixed $data;
     private mixed $stream;
     private int $line = 0;
+    /**
+     * @var string
+     */
     private string $headers;
 
     public function __construct(UploadedFile $file) {
@@ -32,22 +38,34 @@ final class DataFileProcessor implements \Iterator
     }
 
     public function next(): void {
-        if ($this->valid() !== false) {
+        if ($this->data !== false) {
             $this->data = fgetcsv($this->stream);
             $this->line++;
         }
     }
 
     public function valid(): bool {
-        return false !== fgetcsv($this->stream);
+        return false !== $this->data;
     }
 
     public function __destruct() {
         fclose($this->stream);
     }
 
-    public function getHeaders()
+    public function getHeaders(): string
     {
         return $this->headers;
+    }
+
+    public function getCurrentWithHeaders()
+    {
+        $headers = explode(';', str_replace(["\n", "\r"], "", $this->headers));
+        $values = explode(';', implode($this->data));
+        $line = [];
+        foreach ($headers as $i => $header) {
+            $line[$header] = $values[$i];
+        }
+
+        return array_filter($line);
     }
 }

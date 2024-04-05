@@ -6,5 +6,5 @@ use App\Http\Controllers\HomeController;
 Route::get('/', HomeController::class)->name('home');
 
 Route::middleware('api')
-    ->prefix('api/dataFiles')
-    ->group(base_path('routes/api/dataFilesApi.php'));
+    ->prefix('api/csvFiles')
+    ->group(base_path('routes/api/csvFilesApi.php'));
