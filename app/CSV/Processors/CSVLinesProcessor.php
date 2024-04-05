@@ -56,7 +56,7 @@ final class CSVLinesProcessor implements \Iterator
 
     public function getHeaders(): array
     {
-        return array_filter(explode(';', str_replace(["\n", "\r"], "", $this->headers)));
+        return explode(';', str_replace(["\n", "\r"], "", $this->headers));
     }
 
     public function getCurrentWithHeaders()
@@ -68,6 +68,6 @@ final class CSVLinesProcessor implements \Iterator
             $line[$header] = $values[$i];
         }
 
-        return array_filter($line);
+        return $line    ;
     }
 }

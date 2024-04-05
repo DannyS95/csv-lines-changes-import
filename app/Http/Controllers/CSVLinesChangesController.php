@@ -21,8 +21,13 @@ final class CSVLinesChangesController extends Controller
         # start reading line by line
         $linesCount = iterator_count($oldCsvProcessor);
         $linesCount--;
+
+        $request->validate([
+            'recentData' => ["gt:$linesCount"],
+        ], ['recentData.gt' => 'The recent csv must contain more data than the older CSV.']);
+
         $recentCsvProcessor->rewind();
-        $linesChanges = [$recentCsvProcessor->getHeaders()];
+        $linesChanges = [array_merge($recentCsvProcessor->getHeaders(), ['change'])];
 
         foreach ($recentCsvProcessor as $recentLine) {
             $recentLine = $recentCsvProcessor->getCurrentWithHeaders();
@@ -43,7 +48,7 @@ final class CSVLinesChangesController extends Controller
 
             $oldCsvProcessor->rewind();
 
-            $linesChanges[] = array_values($recentLine);
+            $linesChanges[1][] = array_values($recentLine);
         }
 
         $lineChanges['headers'][] = 'change';

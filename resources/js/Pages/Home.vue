@@ -1,9 +1,15 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3'
+import { reactive } from 'vue'
 
 const form = useForm({
     oldData: null,
     recentData: null,
+})
+
+const csvTable = reactive({
+    headers: null,
+    data: null,
 })
 
 const submit = () => {
@@ -15,7 +21,8 @@ const submit = () => {
             'Content-Type': 'multipart/form-data'
         }
     }).then((response) => {
-
+        csvTable.headers = response.data[0]
+        csvTable.data = response.data[1]
     })
     .catch(error => {
         form.errors = error.response.data.errors
@@ -33,9 +40,29 @@ const handleRecentData = (file) => {
 const formReset = () => {
     form.clearErrors()
 }
+
 </script>
 
 <template>
+
+<div class="relative overflow-x-auto mt-10" v-if="csvTable.data && csvTable.headers">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th v-for="header in csvTable.headers" scope="col" class="px-6 py-3">
+                    {{ header }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="data in csvTable.data" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <td v-for="(value, index) in data" class="px-6 py-4" :class="{'font-medium': index == 0, 'text-gray-900': index == 0, 'whitespace-nowrap': index == 0, 'dark:text-white': index == 0}">
+                    {{ value }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
     <div class="relative isolate px-6 pt-14 lg:px-8">
         <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
             <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
@@ -46,18 +73,18 @@ const formReset = () => {
             <div class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
         </div>
     </div>
-    <form v-if="!form.errors.oldData || !form.errors.recentData" class="mx-auto max-w-4xl mt-10 flex items-center justify-center gap-x-6" @submit.prevent="submit()">
+    <form v-if="!form.errors.oldData && !form.errors.recentData" class="mx-auto max-w-4xl mt-10 flex items-center justify-center gap-x-6" @submit.prevent="submit()">
         <label for="oldData" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Old Data</label>
         <input
-        id="oldData"
-        type="file" v-on:change="handleOldData($event.target.files[0])"
-        class="z-50 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            id="oldData"
+            type="file" v-on:change="handleOldData($event.target.files[0])"
+            class="z-50 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
         />
         <label for="recentData" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Recent Data</label>
         <input
-        id="recentData" type="file"
-        v-on:change="handleRecentData($event.target.files[0])"
-        class="z-50 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            id="recentData" type="file"
+            v-on:change="handleRecentData($event.target.files[0])"
+            class="z-50 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
         />
         <button class="z-50 py-2.5 mt-2 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
         type="submit">Submit</button>
@@ -92,4 +119,5 @@ const formReset = () => {
             </div>
         </div>
     </div>
+
 </template>
