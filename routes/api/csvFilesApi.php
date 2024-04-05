@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CSVLinesDifferenceController;
+use App\Http\Controllers\CSVLinesChangesController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -15,4 +15,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/linesDifference', CSVLinesDifferenceController::class)->name('csvLines.difference');
+Route::post('/linesChanges', CSVLinesChangesController::class)->name('csvLines.changes');

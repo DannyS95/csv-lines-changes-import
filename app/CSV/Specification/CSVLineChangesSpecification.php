@@ -2,7 +2,7 @@
 
 namespace App\CSV\Specification;
 
-final class CSVLineDifferenceSpecification
+final class CSVLineChangesSpecification
 {
     private array $columnIdentifiers = [];
     public function __construct() {
@@ -14,7 +14,7 @@ final class CSVLineDifferenceSpecification
         ];
     }
 
-    public function isSame(array $line, array $newLine)
+    public function isSame(array $line, array $recentLine)
     {
         $line = array_values(array_filter($line, function($header) {
             if (in_array($header, $this->columnIdentifiers)) {
@@ -22,27 +22,25 @@ final class CSVLineDifferenceSpecification
             }
         }, ARRAY_FILTER_USE_KEY));
 
-        $newLine = array_values(array_filter($newLine, function($header) {
+        $recentLine = array_values(array_filter($recentLine, function($header) {
             if (in_array($header, $this->columnIdentifiers)) {
                 return true;
             }
         }, ARRAY_FILTER_USE_KEY));
 
-        if (empty(array_diff($line, $newLine))) {
+        if (empty(array_diff($recentLine, $line))) {
             return true;
         }
 
         return false;
     }
 
-    public function difference($line, $newLine): array
+    public function change($line, $recentLine): string
     {
-        if (empty(array_diff($line, $newLine))) {
-            $newLine['difference'] = 'unchanged';
-        } else {
-            $newLine['difference'] = 'unchanged';
+        if (empty(array_diff($line, $recentLine))) {
+            return 'unchanged';
         }
 
-        return $newLine;
+        return 'changed';
     }
 }

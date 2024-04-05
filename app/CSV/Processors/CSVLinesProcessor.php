@@ -54,14 +54,14 @@ final class CSVLinesProcessor implements \Iterator
         fclose($this->stream);
     }
 
-    public function getHeaders(): string
+    public function getHeaders(): array
     {
-        return $this->headers;
+        return array_filter(explode(';', str_replace(["\n", "\r"], "", $this->headers)));
     }
 
     public function getCurrentWithHeaders()
     {
-        $headers = explode(';', str_replace(["\n", "\r"], "", $this->headers));
+        $headers = $this->getHeaders();
         $values = explode(';', implode($this->data));
         $line = [];
         foreach ($headers as $i => $header) {
