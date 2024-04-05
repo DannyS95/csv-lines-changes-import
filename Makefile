@@ -23,10 +23,14 @@ npm-i:
 npm-add:
 	$(DOCKER_EXEC) $(CONTAINER_NAME) sh -c 'npm install $(package) --no-interaction'
 
+fix-laravel-perms:
+	$(DOCKER_EXEC) $(CONTAINER_NAME) sh -c 'chmod -R 777 storage database'
+
 build:
 	$(DOCKER_EXEC) $(CONTAINER_NAME) sh -c 'npm run build'
 
-install: composer-i npm-i build
+
+install: composer-i npm-i build fix-laravel-perms
 
 sh:
 	$(DOCKER_EXEC) $(CONTAINER_NAME) sh

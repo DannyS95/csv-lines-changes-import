@@ -61,8 +61,6 @@ final class CSVLinesChangesController extends Controller
             $linesChanges[1][] = array_values($recentLine);
         }
 
-        $lineChanges['headers'][] = 'change';
-
         return response()->json($linesChanges);
     }
 }

@@ -7,12 +7,11 @@
 * Use git to clone the project.
 * Make sure the docker engine is installed and run docker **compose up -d**, and that's all that is needed to make it work.
 * After the first main step, please run **make install** in the project root, if you get a connection refused just wait a few seconds until it works.
-* After having the docker containers running successfully, just visit [localhost:8080/]() so you can test the project.
+* After getting the containers running, and having successfully installed the project, just visit [localhost:8080/]() so you can run the tests.
 
 <br>
 
 ## Project considerations
-* Authentication was left out due to the already extensive configuration and its needs not being too relevant in my view, as well as protecting the endpoints.
 * The project was developed using [Inertia](https://inertiajs.com/) with [Vue 3](https://vuejs.org/guide/introduction.html).
 * Validations are in place for when we are uploading the CSV, such as required fields, minimum size, and ensuring the size of the file with the newer data is more or the same as the other.
 * I build this project to practise the usage of Inertia and Laravel.
