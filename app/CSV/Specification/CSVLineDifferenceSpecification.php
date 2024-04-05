@@ -2,7 +2,7 @@
 
 namespace App\CSV\Specification;
 
-class CSVLineDifferenceSpecification
+final class CSVLineDifferenceSpecification
 {
     private array $columnIdentifiers = [];
     public function __construct() {
@@ -14,33 +14,35 @@ class CSVLineDifferenceSpecification
         ];
     }
 
-    public function isSame(array $lineData, array $lineDataCmp)
+    public function isSame(array $line, array $newLine)
     {
-        $lineData = array_values(array_filter($lineData, function($header) {
+        $line = array_values(array_filter($line, function($header) {
             if (in_array($header, $this->columnIdentifiers)) {
                 return true;
             }
         }, ARRAY_FILTER_USE_KEY));
 
-        $lineDataCmp = array_values(array_filter($lineDataCmp, function($header) {
+        $newLine = array_values(array_filter($newLine, function($header) {
             if (in_array($header, $this->columnIdentifiers)) {
                 return true;
             }
         }, ARRAY_FILTER_USE_KEY));
 
-        if (empty(array_diff($lineData, $lineDataCmp))) {
+        if (empty(array_diff($line, $newLine))) {
             return true;
         }
 
         return false;
     }
 
-    public function nonIdentifiers(array $line)
+    public function difference($line, $newLine): array
     {
-        return array_filter($line, function($key) {
-            if (in_array($key, $this->columnIdentifiers) === false) {
-                return true;
-            }
-        }, ARRAY_FILTER_USE_KEY);
+        if (empty(array_diff($line, $newLine))) {
+            $newLine['difference'] = 'unchanged';
+        } else {
+            $newLine['difference'] = 'unchanged';
+        }
+
+        return $newLine;
     }
 }

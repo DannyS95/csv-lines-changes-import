@@ -23,8 +23,10 @@ final class CSVLinesProcessor implements \Iterator
     }
 
     public function rewind(): void {
-        $this->data = fgetcsv($this->stream);
+        rewind($this->stream);
         $this->line = 0;
+        $this->data = fgetcsv($this->stream);
+        $this->next();
     }
 
     #[\ReturnTypeWillChange]

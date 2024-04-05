@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use App\CSV\DataScanners\CSVLinesScanner;
 use App\CSV\Processors\CSVLinesProcessor;
 use App\Http\Requests\DataFilesDifferenceRequest;
 use App\CSV\Specification\CSVLineDifferenceSpecification;
@@ -16,25 +15,31 @@ final class CSVLinesDifferenceController extends Controller
         $oldFile = $request->file('oldData');
 
         # start processing the files
-        $recentDataProcessor = new CSVLinesProcessor($recentFile);
-        $oldDataProcessor = new CSVLinesProcessor($oldFile);
+        $recentCsvProcessor = new CSVLinesProcessor($recentFile);
+        $oldCsvProcessor = new CSVLinesProcessor($oldFile);
 
         # start reading line by line
-        foreach ($oldDataProcessor as $oldData) {
-            $oldData = $oldDataProcessor->getCurrentWithHeaders();
+        $linesCount = iterator_count($recentCsvProcessor);
+        $recentCsvProcessor->rewind();
+        foreach ($recentCsvProcessor as $recentLine) {
+            $recentLine = $recentCsvProcessor->getCurrentWithHeaders();
 
-            foreach($recentDataProcessor as $recentData) {
-                $recentData = $recentDataProcessor->getCurrentWithHeaders();
+            foreach($oldCsvProcessor as $oldLine) {
+                $oldLine = $recentCsvProcessor->getCurrentWithHeaders();
 
                 # check if it is an existing line in the old file
-                if ($csvLineDifferenceSpecification->isSame($oldData, $recentData)) {
-                    $oldData = $csvLineDifferenceSpecification->nonIdentifiers($oldData);
-                    $recentData = $csvLineDifferenceSpecification->nonIdentifiers($recentData);
-
-                    $scanner = new CSVLinesScanner($oldData, $recentData);
-                    
+                if ($csvLineDifferenceSpecification->isSame($oldLine, $recentLine)) {
+                    # check if it changed or not
+                    $recentLine = $csvLineDifferenceSpecification->difference($oldLine, $recentLine);
+                    break;
+                } else if ($linesCount === $recentCsvProcessor->key()) {
+                    $recentLine['difference'] = 'new';
                 }
             }
+
+            dd($recentLine);
+
+            $oldCsvProcessor->rewind();
         }
     }
 }
