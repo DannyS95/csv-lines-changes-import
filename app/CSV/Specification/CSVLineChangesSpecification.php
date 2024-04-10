@@ -37,7 +37,7 @@ final class CSVLineChangesSpecification
 
     public function change($line, $recentLine): string
     {
-        if (empty(array_diff($line, $recentLine))) {
+        if (empty(array_diff(array_values($recentLine), array_values($line)))) {
             return 'unchanged';
         }
 

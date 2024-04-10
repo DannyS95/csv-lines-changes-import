@@ -34,7 +34,6 @@ final class CSVLinesChangesController extends Controller
 
         # start reading line by line
         $linesCount = iterator_count($oldCsvProcessor);
-        $linesCount--;
 
         $recentCsvProcessor->rewind();
         $linesChanges = [array_merge($recentCsvProcessor->getHeaders(), ['change'])];
@@ -43,6 +42,7 @@ final class CSVLinesChangesController extends Controller
             $recentLine = $recentCsvProcessor->getCurrentWithHeaders();
 
             foreach($oldCsvProcessor as $oldLine) {
+
                 $oldLine = $oldCsvProcessor->getCurrentWithHeaders();
 
                 # check if it is an existing line in the old file
@@ -60,7 +60,6 @@ final class CSVLinesChangesController extends Controller
 
             $linesChanges[1][] = array_values($recentLine);
         }
-
         return response()->json($linesChanges);
     }
 }
