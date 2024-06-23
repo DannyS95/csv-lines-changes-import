@@ -37,10 +37,17 @@ final class CSVLineChangesSpecification
 
     public function change($line, $recentLine): string
     {
-        if (empty(array_diff(array_values($recentLine), array_values($line)))) {
+        if (empty(array_diff(array_values($this->keyValueConcat($recentLine)), array_values($this->keyValueConcat($line))))) {
             return 'unchanged';
         }
 
         return 'changed';
+    }
+
+    private function keyValueConcat(array $arr): array
+    {
+        return array_map(function($k, $v){
+            return "$k=$v";
+        }, array_keys($arr), array_values($arr));
     }
 }
