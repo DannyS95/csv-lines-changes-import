@@ -30,6 +30,8 @@
   <li>REST</li>
   <li>OCP</li>
   <li>LSP</li>
+  <li>Iterators</li>
+  <li>Specification</li>
 </ul>
 
 

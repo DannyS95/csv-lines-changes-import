@@ -34,7 +34,7 @@ final class CSVLinesChangesController extends Controller
 
         # start reading line by line
         $linesCount = iterator_count($oldCsvProcessor);
-
+        $csvLineDifferenceSpecification->setHeaders($recentCsvProcessor->getHeaders());
         $recentCsvProcessor->rewind();
         $linesChanges = [array_merge($recentCsvProcessor->getHeaders(), ['change'])];
 

@@ -6,12 +6,11 @@ final class CSVLineChangesSpecification
 {
     private array $columnIdentifiers = [];
     public function __construct() {
-        $this->columnIdentifiers = [
-            'cnpj',
-            'pdf_file_name',
-            'balance_date',
-            'balance_refers_to_date',
-        ];
+    }
+
+    public function setHeaders(array $headers)
+    {
+        $this->columnIdentifiers = $headers;
     }
 
     public function isSame(array $line, array $recentLine)
